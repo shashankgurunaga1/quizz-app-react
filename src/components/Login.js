@@ -34,6 +34,10 @@ const Login = (props) => {
   const { isLoggedIn } = useSelector(state => state.auth);
   const { message } = useSelector(state => state.message);
   const dispatch = useDispatch();
+  const[html_element,setElement]=useState();
+  const [showDelayedText, setShowDelayedText] =useState(false);
+
+  
 
   const onChangeUsername = (e) => {
     const email = e.target.value;
@@ -45,6 +49,10 @@ const Login = (props) => {
     setPassword(passwrd);
   };
 
+  setTimeout(() => {
+    setShowDelayedText(true);
+}, 2000);
+
   const handleLogin = (e) => {
     e.preventDefault();
 
@@ -55,14 +63,15 @@ const Login = (props) => {
         
         dispatch(login(email, passwrd))
           .then(() => {
+
         navigate("/profile");
-        // navigate("/admin");
-            window.location.reload();
+       
+        window.location.reload();
+        
           })
           .catch(() => {
             setLoading(false);
           });
-         // sessionStorage.setItem('isMyUserLoggedIn', "true");
       } else {
         setLoading(false);
       }
@@ -70,12 +79,14 @@ const Login = (props) => {
   
     if (isLoggedIn) {
       return <Navigate to="/profile" />;
-    // return <Navigate to="/admin" />;
     }
 
 
     
   return (
+
+   
+    <div className="container min-h-screen min-w-screen bg-red-300">
     <div className="col-md-12">
       <div className="card card-container">
         <img
@@ -129,6 +140,8 @@ const Login = (props) => {
         </Form>
       </div>
     </div>
+    </div>
+    
   );
 };
 

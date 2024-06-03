@@ -1,12 +1,16 @@
 import axios from "axios"
+import { REST_URL } from "../actions/constant";
 
 
-const API_URL="http://localhost:8080/api/v1/auth/"
+const API_URL =REST_URL+ "api/v1/auth/";
+console.log("API URL ", API_URL);
+//const API_URL="http://localhost:8080/api/v1/auth/"
 //temprorary setting role value 
 //var role ="ADMIN"
 
 const register=(role,first_name,last_name,email,passwrd)=>{
    // localStorage.getItem('role');
+
 
     console.log(" in auth serice js role", role);
     console.log(" in auth serice js first name", first_name);
@@ -25,8 +29,9 @@ return axios.post(API_URL+"register",{
 
 
 
-const login=(email,passwrd)=>{
-    return axios.post(API_URL+"authenticate",{
+const  login=async(email,passwrd)=>{
+
+    return  await axios.post(API_URL+"authenticate",{
         email,
         passwrd
   }).then((response)=>{
@@ -43,7 +48,12 @@ const login=(email,passwrd)=>{
 
 
       return response.data;
-  });
+  })
+  .catch(error => {console.log("error  ", error)})
+
+  ;
+
+ 
 };
 
 

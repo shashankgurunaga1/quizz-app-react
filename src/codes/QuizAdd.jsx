@@ -1,6 +1,6 @@
 import React from "react";
 import authHeader from "../services/auth-header"
-import { useState, useEffect } from "react";
+import { useState, useEffect,useRef } from "react";
 import {
   Button,
   EditableText,
@@ -8,6 +8,8 @@ import {
   Position,
   InputGroup,
 } from "@blueprintjs/core";
+import { vInputValidation,required,validEmail } from "../actions/userValidation";
+
 
 const AppToaster = Toaster.create({
   position: Position.TOP,
@@ -17,6 +19,8 @@ function QuizAdd() {
   const [NewFirstName, setFirstName] = useState("");
   const [NewLastName, setLastName] = useState("");
   const [NewEmail, setEmail] = useState("");
+  const [NewPassword, setPassword] = useState("");
+
   const[NewRole,setNewRole] = useState();
   const[NewPhoneNumber, setPhoneNumber]=useState();
 
@@ -24,6 +28,11 @@ function QuizAdd() {
 
   const currentUser = localStorage.getItem('user');
   const token='Bearer'+currentUser;
+ 
+    const [error, setError] = useState('');
+    const inputRef = useRef(null);
+
+   
 
   console.log( "token value in quizadd js ", token);
 
@@ -39,13 +48,31 @@ function QuizAdd() {
   }, []);
 
 
+  const handleRoleChange = (e) => {
+    console.log("new role ", e.target.value);
+    setNewRole(e.target.value);
+  };
   const adduser = () => {
-    const first_name = NewFirstName.trim();
-    const last_name = NewLastName.trim();
-    const email=NewEmail.trim();
-    const role=NewRole.trim();
-    const phone_no=NewPhoneNumber.trim();
-    if (first_name && last_name) {
+
+    let first_name ;
+    let last_name;
+    let email;
+    let role;
+    let phone_no;
+    let passwrd ;
+    if(NewFirstName)
+       {first_name=NewFirstName.trim();}
+ 
+     if (NewLastName) {last_name = NewLastName.trim();}
+     
+
+    if(NewEmail){email=NewEmail.trim();}
+   
+    if (NewRole) {role=NewRole.trim();}
+    if (NewPhoneNumber){ phone_no=NewPhoneNumber.trim();}
+    if(NewPassword) { passwrd = NewPassword.trim();}
+    if (first_name && last_name && email && role && passwrd && phone_no) {
+      // dispatch(register(role,first_name,last_name, email, passwrd))
       fetch("http://localhost:8080/quiz/adduser",  {
         method: "POST",
         body: JSON.stringify({
@@ -53,6 +80,7 @@ function QuizAdd() {
           last_name,
           email,
           role,
+          passwrd,
           phone_no
         }),
         headers: {
@@ -66,6 +94,8 @@ function QuizAdd() {
           setFirstName("");
           setLastName("");
           setEmail("");
+          setPassword("");
+          setPhoneNumber();
     
           AppToaster.show({
             message: "User added successfully",
@@ -73,6 +103,19 @@ function QuizAdd() {
             timeout: 3000,
           });
         });
+    }
+    else{
+      setFirstName("");
+          setLastName("");
+          setEmail("");
+          setPassword("");
+          setPhoneNumber();
+      AppToaster.show({
+        message: "All fields need to be filled up",
+        intent: "failure",
+        timeout: 3000,
+      });
+
     }
   };
 
@@ -196,8 +239,9 @@ function QuizAdd() {
                 />
               </td>
              
+             
               <td>
-                <EditableText
+                <EditableText 
                   value={user.role}
                   onChange={(value) =>
                     OnChangeHandler(user.id, "role", value)
@@ -211,11 +255,11 @@ function QuizAdd() {
                 } />
               </td>
               <td>
-                <Button intent="primary" onClick={() => updateUser(user.id)}>
+                <Button  className="btn btn-primary btn-block" onClick={() => updateUser(user.id)}>
                   Update
                 </Button>
                 &nbsp;
-                <Button intent="danger" onClick={() => deleteUser(user.id)}>
+                <Button className="btn btn-warning btn-block" onClick={() => deleteUser(user.id)}>
                   Delete
                 </Button>
               </td>
@@ -224,39 +268,56 @@ function QuizAdd() {
           ))}
         </tbody>
         <tfoot>
+        
           <tr>
             <td></td>
             <td>
-              <InputGroup
-                value={NewFirstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                placeholder="Add first name here..."
+              <InputGroup 
 
+                value={NewFirstName}
+                validations={[required,vInputValidation]}
+                onChange={(e) => setFirstName(e.target.value)}
+                placeholder="Add first name..."
+                
               />
+
             </td>
             <td>
               <InputGroup
                 value={NewLastName}
+                validations={[required,vInputValidation]}
                 onChange={(e) => setLastName(e.target.value)}
-                placeholder="Add last name here..."
+                placeholder="Add last name..."
 
               />
             </td>
             <td>
               <InputGroup
                 value={NewEmail}
+                type="email"
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Add Email here..."
+                placeholder="Add Email..."
+                required
+
+              />
+            </td>
+            <td>
+            <InputGroup
+                value={NewPassword}
+                validations={[required]}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Add Password..."
 
               />
             </td>
             <td>
              
 
-                <select id="role" name="role" value={role} onChange={(e)=> setNewRole(e.target.value)}>
-                
-                <option value="USER">User</option>
+                <select id="role" name="role"  onChange= {handleRoleChange}>
+                <option value="" selected disabled hidden>Choose here</option>
+                <option  value="USER">User</option>
                 <option value="ADMIN">Admin</option>
+                
 
               </select>
             </td>
@@ -264,17 +325,23 @@ function QuizAdd() {
             <InputGroup
                 value={NewPhoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
-                placeholder="Add Phone number here..."
+                placeholder="Add Phone number..."
               />
             </td>
-            <td>
-              <Button intent="success" onClick={adduser}>
+           
+          </tr>
+          <tr>
+            <td></td>
+          <td>
+              <Button className="btn btn-info btn-block" onClick={adduser}>
                 Add user
               </Button>
             </td>
           </tr>
+        
         </tfoot>
       </table>
+    
     </div>
   );
 }

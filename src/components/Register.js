@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
@@ -117,6 +118,7 @@ export  const vlastname = (value) => {
           }
         };
         return (
+          <div >
             <div className="col-md-12">
               <div className="card card-container">
                
@@ -208,16 +210,10 @@ export  const vlastname = (value) => {
         </Form>
       </div>
     </div>
+    </div>
   );
 };
 
 
 export default Register;
-/*
-{
-  Register,
-  validEmail,
-  required,
-  vfirstname,
-  vlastname
-}*/
+

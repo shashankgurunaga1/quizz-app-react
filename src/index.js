@@ -5,7 +5,9 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from "react-redux";
-import store from './store'
+import store from './store';
+import {ErrorBoundary} from 'react-error-boundary';
+import { Navigate } from 'react-router-dom';
 
 
 
@@ -13,7 +15,9 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <Provider store={store}>
   <BrowserRouter>
+  <ErrorBoundary fallback={<Navigate to="/login" />}>
     <App />
+    </ErrorBoundary>
   </BrowserRouter>
   </Provider>
 );

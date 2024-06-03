@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 
 import UserService from "../services/user.service";
+import Image from 'react-bootstrap/Image';
+//import {CImage} "@c";
+
 
 const Home = () => {
   const [content, setContent] = useState("");
@@ -26,6 +29,16 @@ const Home = () => {
       <header className="jumbotron">
         <h3>{content}</h3>
       </header>
+      <div className="">
+        <br>
+        </br>
+        <br></br>
+        <br></br>
+      <img
+          src="./quiz-png.png"
+          alt="quiz-img"
+        />
+      </div>
     </div>
   );
 };

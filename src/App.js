@@ -7,6 +7,7 @@ import { Routes, Route, Link, useLocation } from "react-router-dom";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
+import Footer from "./Footer";
 
 import Login from "./components/Login";
 import Register from "./components/Register";
@@ -18,7 +19,11 @@ import BoardAdmin from "./components/BoardAdmin";
 import { logout } from "./actions/auth";
 import { clearMessage } from "./actions/message";
 import { jwtDecode } from 'jwt-decode';
-
+import Questions from './codes/Questions';
+import QuestionPage, {QuestionPath} from './codes/QuestionPage';
+import "core-js/stable/atob";
+import { decode } from "base-64";
+global.atob = decode;
 
 const App = () => {
   const [showAdminBoard, setShowAdminBoard] = useState(false);
@@ -41,9 +46,10 @@ const App = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    console.log("current user ",currentUser)
+    console.log("current user ",currentUser);
    
    
+    
 
     if (currentUser) {
 
@@ -56,7 +62,7 @@ const App = () => {
 
       //setRole(jwtDecode(currentUser.toString()).role)
     
-      if(jwtDecode(currentUser.toString()).role =="ADMIN")
+      if(jwtDecode(currentUser.toString()).role =="ADMIN" )
       {
         setShowAdminBoard(true);
 
@@ -68,7 +74,9 @@ const App = () => {
 
   return (
     <div>
-      <nav className="navbar navbar-expand navbar-dark bg-dark">
+    <div id="geeks">
+
+      <nav className="navbar navbar-expand navbar-dark bg-primary text-secondary">
       
         <div className="navbar-nav mr-auto">
           <li className="nav-item">
@@ -79,14 +87,24 @@ const App = () => {
 
     
 
+        
+
           {showAdminBoard && (
             <li className="nav-item">
-              <Link to={"/admin"} className="nav-link">
-              Admin Board
-              </Link>
+            <Link to={"/questions"} className="nav-link">
+                Questions Management
+            </Link>
             </li>
-            
           )}
+
+{currentUser && (
+            <li className="nav-item">
+            <Link to={"/quiz"} className="nav-link">
+                 Take  Quiz
+            </Link>
+            </li>
+          )}
+
             {showAdminBoard && (
             <li className="nav-item">
               <Link to={"/userManagement"} className="nav-link">
@@ -96,20 +114,16 @@ const App = () => {
             
           )}
 
-          {currentUser && (
-            <li className="nav-item">
-              <Link to={"/user"} className="nav-link">
-                User
-              </Link>
-            </li>
-          )}
+         
         </div>
 
         {currentUser ? (
           <div className="navbar-nav ml-auto">
             <li className="nav-item">
               <Link to={"/profile"} className="nav-link">
-                {jwtDecode(currentUser.toString()).sub}
+                {
+                jwtDecode(currentUser.toString()).sub
+                }
               </Link>
             </li>
             <li className="nav-item">
@@ -131,6 +145,9 @@ const App = () => {
                 Sign Up
               </Link>
             </li>
+
+
+         
           </div>
         )}
       </nav>
@@ -145,9 +162,14 @@ const App = () => {
           <Route path="/user" element={<BoardUser />} />
           <Route path="/admin" element={<BoardAdmin />} />
           <Route path="/userManagement" element={<QuizAdd />} />
+          <Route path="/questions" element={<Questions/>}/>
+          <Route path="/quiz" element={<QuestionPage/>}/>
 
         </Routes>
       </div>
+
+    </div>
+    <Footer /> 
 
     </div>
   );
